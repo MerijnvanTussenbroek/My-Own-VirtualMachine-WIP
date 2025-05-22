@@ -6,25 +6,26 @@
 #include "commands.h"
 #include "frame.h"
 
-DEFINE_STACK(frameStack, Frame);
-DEFINE_STACK(valuesStack, unsigned long int);
+DEFINE_STACK(frame, Frame);
+DEFINE_STACK(values, unsigned long int);
 
 typedef unsigned long int Reg;
 
 typedef struct {
-    Reg temporaryStorageRegister;
-    Reg Var1;
-    Reg Var2;
-    Reg Result;
-    Reg ip;
-    Reg sp;
+    Reg temporaryStorageRegister; // 1
+    Reg Var1; // 2
+    Reg Var2; // 3
+    Reg Result; // 4
+    Reg ip; // 5
+    Reg sp; // 6
 } Registers;
 
 
 
 typedef struct {
     Registers r;
-    frameStack_stack* frames;
-    valuesStack_stack* loadedValues;
-    Program program;
+    frame_stack* frames;
+    values_stack* loadedValues;
+    Args* globalVariables;
+    Program* program;
 }VM;

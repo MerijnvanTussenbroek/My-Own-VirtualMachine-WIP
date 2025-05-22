@@ -1,12 +1,11 @@
 #pragma once
 
-typedef char* Label;
-
-enum _argType
+enum variableType
 {
     INTEGER = 0,
-    CHARACTER = 1,
-    DOUBLE = 2
+    CHARACTER,
+    DOUBLE,
+    NAME
 };
 typedef unsigned char ArgType;
 
@@ -24,8 +23,7 @@ typedef struct
 
 typedef struct
 {
-    Label current;
-    Label previous;
-    int argAmount;
+    int current; //the index of the label of the current function we're in
+    int previous; //the index of the label of the instruction we were previously at
     Args* args;
 } Frame;

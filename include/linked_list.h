@@ -107,4 +107,17 @@ void name##_changeValue(name##_node* list, int index, type* newData)\
     {                                   \
         list->data = *newData;          \
     }                                   \
+}                                       \
+                                        \
+void name##_destroyLinkedList(name##_node* list)\
+{                                       \
+    if(list->next == NULL)              \
+    {                                   \
+        free(list);                     \
+    }                                   \
+    else                                \
+    {                                   \
+        name##_destroyLinkedList(list->next);\
+        free(list);                     \
+    }                                   \
 }

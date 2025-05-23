@@ -33,6 +33,11 @@ VM* initializeVirtualMachine(Program* p)
     return virtualMachine;
 }
 
+void showValues(VM* vm)
+{
+
+}
+
 void destroyVM(VM* vm)
 {
     values_stack* valuesStack = vm->loadedValues;
@@ -54,18 +59,78 @@ void Run_VM(VM* vm)
     unsigned long int* ip = &vm->r.ip;
     while(p[*ip].instr != HALT)
     {
+        showValues(vm);
+        (*ip)++;
         switch(p[*ip].instr)
         {
+            case DEFINE:
+            //DEFINE_func(vm);
+            break;
+            case SET:
 
+            break;
+            case LOAD:
+
+            break;
+            case PUSH:
+
+            break;
+            case READ:
+
+            break;
+            case POP:
+
+            break;
+            case READ_REG:
+
+            break;
+            case LOAD_REG:
+
+            break;
+            case LABEL:
+
+            break;
+            case JUMP:
+
+            break;
+            case LOOP:
+
+            break;
+            case RET:
+
+            break;
+            case ADD:
+
+            break;
+            case MIN:
+
+            break;
+            case MUL:
+
+            break;
+            case DIV:
+
+            break;
+            case HALT:
+                destroyVM(vm);
+                return;
+            break;
             default:
             printf("An unknown command has been put into the program. Error.");
             return;
             break;
         }
-
-
-        *ip++;
     }
+    if(p[*ip].instr == HALT)
+    {
+        showValues(vm);
+    }
+    else
+    {
+        printf("Something went wrong.");
+    }
+
+    destroyVM(vm);
 }
 
 

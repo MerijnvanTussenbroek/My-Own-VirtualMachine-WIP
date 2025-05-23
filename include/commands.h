@@ -17,6 +17,7 @@ enum e_opcode
 
     LABEL,
     JUMP,
+    LOOP,
     RET,
 
     ADD,
@@ -58,8 +59,6 @@ typedef struct
     values* argument;
 } command;
 
-
-
 typedef command Program;
 
 /*
@@ -84,6 +83,7 @@ LOAD_REG (value) (value)
 
 LABEL (name) (variable names)
 JUMP (name) // jumps to the label with that name, any variables needed will be pushed onto the stack, and then popped into the variables defined at the label
+JUMP (value) // if the last item on the stack is a 1, it jumps back the value given
 RET (value) //puts a variable in the temporary register and pushes it on the stack when back
 
 HALT

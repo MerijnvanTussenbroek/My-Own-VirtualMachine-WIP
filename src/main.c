@@ -64,7 +64,7 @@ void Run_VM(VM* vm)
         switch(p[*ip].instr)
         {
             case DEFINE:
-            //DEFINE_func(vm);
+            DEFINE_func(vm);
             break;
             case SET:
 

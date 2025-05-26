@@ -16,13 +16,13 @@ VM* initializeVirtualMachine(Program* p)
 
     virtualMachine = (VM *)malloc(sizeof(VM));
 
-    Args* globalVars = (Args *)malloc(sizeof(Args));
+    args_list* l = args_listCreate(1);
 
     Frame* firstFrame = (Frame *)malloc(sizeof(Frame));
     firstFrame->current = 0;
     firstFrame->previous = 0;
     
-    virtualMachine->globalVariables = globalVars;
+    virtualMachine->globalVariables = l;
 
     unsigned long int initialValue = 0;
 
@@ -44,11 +44,11 @@ void destroyVM(VM* vm)
 {
     values_stack* valuesStack = vm->loadedValues;
     frame_stack* frames = vm->frames;
-    Args* globalVars = vm->globalVariables;
+    args_list* globalVars = vm->globalVariables;
     Program* p = vm->program;
  
     free(p);
-    free(globalVars);
+    args_deleteList(globalVars);
     values_destroyStack(valuesStack);
     frame_destroyStack(frames);
 

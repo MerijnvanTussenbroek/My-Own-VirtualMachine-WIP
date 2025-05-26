@@ -1,5 +1,7 @@
 #pragma once
 
+#include "list.h"
+
 enum variableType
 {
     INTEGER = 0,
@@ -14,17 +16,15 @@ typedef struct
 {
     ArgType type;
     unsigned char* name;
-    union{
-        int x;
-        char y;
-        double z;
-    } value;
+    unsigned long int value;
 } Args;
+
+DEFINE_LIST(Args, args);
 
 
 typedef struct
 {
     int current; //the index of the label of the current function we're in
     int previous; //the index of the instruction we were previously at
-    Args* args;
+    args_list* args;
 } Frame;

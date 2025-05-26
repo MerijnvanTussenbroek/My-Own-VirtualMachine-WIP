@@ -6,6 +6,7 @@
 DEFINE_STACK(frame, Frame);
 DEFINE_STACK(values, unsigned long int);
 
+
 typedef unsigned long int Reg;
 
 typedef struct {
@@ -21,6 +22,6 @@ typedef struct {
     Registers r;
     frame_stack* frames;
     values_stack* loadedValues;
-    Args* globalVariables;
+    args_list* globalVariables;
     Program* program;
 }VM;

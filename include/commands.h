@@ -17,7 +17,6 @@ enum e_opcode
 
     LABEL,
     JUMP,
-    LOOP,
     RET,
 
     ADD,

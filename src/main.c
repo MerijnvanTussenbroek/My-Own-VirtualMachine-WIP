@@ -5,6 +5,7 @@ Program* initializePorgram()
 {
     Program* p;
 
+    p = (Program *)malloc(sizeof(Program));
 
     return p;
 }
@@ -15,12 +16,13 @@ VM* initializeVirtualMachine(Program* p)
 
     virtualMachine = (VM *)malloc(sizeof(VM));
 
-    Args* globalVars = NULL;
+    Args* globalVars = (Args *)malloc(sizeof(Args));
 
     Frame* firstFrame = (Frame *)malloc(sizeof(Frame));
     firstFrame->current = 0;
     firstFrame->previous = 0;
-    firstFrame->args = globalVars;
+    
+    virtualMachine->globalVariables = globalVars;
 
     unsigned long int initialValue = 0;
 
@@ -53,6 +55,13 @@ void destroyVM(VM* vm)
     free(vm);
 }
 
+void Setup_VM(VM* vm)
+{
+    Program* p = vm->program;
+    unsigned long int* ip = &vm->r.ip;
+    
+}
+
 void Run_VM(VM* vm)
 {
     Program* p = vm->program;
@@ -67,49 +76,46 @@ void Run_VM(VM* vm)
             DEFINE_func(vm);
             break;
             case SET:
-
+            SET_func(vm);
             break;
             case LOAD:
-
+            LOAD_func(vm);
             break;
             case PUSH:
-
+            PUSH_func(vm);
             break;
             case READ:
-
+            READ_func(vm);
             break;
             case POP:
-
+            POP_func(vm);
             break;
             case READ_REG:
-
+            READ_REG_func(vm);
             break;
             case LOAD_REG:
-
+            LOAD_REG_func(vm);
             break;
             case LABEL:
-
+            LABEL_func(vm);
             break;
             case JUMP:
-
-            break;
-            case LOOP:
-
+            JUMP_func(vm);
             break;
             case RET:
-
+            RET_func(vm);
             break;
             case ADD:
-
+            ADD_func(vm);
             break;
             case MIN:
-
+            MIN_func(vm);
             break;
             case MUL:
-
+            MUL_func(vm);
             break;
             case DIV:
-
+            DIV_func(vm);
             break;
             case HALT:
                 destroyVM(vm);
@@ -136,8 +142,11 @@ void Run_VM(VM* vm)
 
 int main()
 {
-    
+    Program* p = initializePorgram();
+    VM* vm = initializeVirtualMachine(p);    
 
+
+    destroyVM(vm);
 
     printf("Program finished without issue");
     return 0;

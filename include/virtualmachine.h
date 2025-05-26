@@ -17,8 +17,6 @@ typedef struct {
     Reg sp; // 6
 } Registers;
 
-
-
 typedef struct {
     Registers r;
     frame_stack* frames;

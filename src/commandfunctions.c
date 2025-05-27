@@ -106,16 +106,6 @@ void SET_func(VM* vm)
 
 void LOAD_func(VM* vm)
 {
-        values_stack* stack = vm->loadedValues;
-    values_stack_ss value = values_pop(stack);
-
-    if(value.success != 1)
-    {
-        exit(-1);
-    }
-
-    unsigned long int v = value.value;
-
     command c = vm->program[vm->r.ip];
     values val = c.argument[0];
 
@@ -140,7 +130,7 @@ void LOAD_func(VM* vm)
         {
             if(strcpy(result.value.name, varName))
             {
-                values_push(stack, result.value.value);
+                values_push(stack, &result.value.value);
                 return;
             }
         }
@@ -162,7 +152,7 @@ void LOAD_func(VM* vm)
         {
             if(strcpy(result2.value.name, varName))
             {
-                values_push(stack, result2.value.value);
+                values_push(stack, &result2.value.value);
                 frame_push(vm->frames, &stackItem.value);
                 return;
             }
@@ -172,7 +162,15 @@ void LOAD_func(VM* vm)
 
 void PUSH_func(VM* vm)
 {
+    unsigned long int v;
     
+    command c = vm->program[vm->r.ip];
+    values val = c.argument[0];
+
+    values_stack* stack = vm->loadedValues;
+
+    values_push(stack, &val);
+    return;
 }
 
 void READ_func(VM* vm)

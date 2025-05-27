@@ -32,6 +32,7 @@ void DEFINE_func(VM* vm)
     strcpy(newVar->name, newName);
 
     args_addToList(l, *newVar);
+    return;
 }
 
 void SET_func(VM* vm)
@@ -102,6 +103,7 @@ void SET_func(VM* vm)
             }
         }
     }
+    return;
 }
 
 void LOAD_func(VM* vm)
@@ -158,6 +160,7 @@ void LOAD_func(VM* vm)
             }
         }
     }
+    return;
 }
 
 void PUSH_func(VM* vm)
@@ -216,7 +219,7 @@ void READ_REG_func(VM* vm)
     }
 
     values_push(vm->loadedValues, &v);
-
+    return;
 }
 
 void LOAD_REG_func(VM* vm)
@@ -254,6 +257,8 @@ void LOAD_REG_func(VM* vm)
         exit(-1);
         break;
     }
+
+    return;
 }
 
 void LABEL_func(VM* vm)
@@ -263,6 +268,7 @@ void LABEL_func(VM* vm)
     values* args = c.argument;
 
     Frame f = frame_pop(vm->frames).value;
+    f.current = vm->r.ip;
     f.args = args_listCreate(4);
 
     if(c.argument[1].type == NULL)
@@ -285,11 +291,35 @@ void LABEL_func(VM* vm)
     }
 
     frame_push(vm->frames, &f);
+    return;
 }
 
 void JUMP_func(VM* vm)
 {
+    command c = vm->program[vm->r.ip];
+    char* name = c.argument[0].value.name;
 
+    Program* p = vm->program;
+    unsigned long int jumpNum = 0;
+
+    for(int i = 0; p[i].instr != HALT; i++)
+    {
+        if(p[i].instr == JUMP)
+        {
+            char* funcName = p[i].argument[0].value.name;
+            if(strcpy(name, funcName))
+            {
+                jumpNum = i;
+                break;
+            }
+        }
+    }
+
+    Frame* f = (Frame *)malloc(sizeof(Frame));
+    f->previous = vm->r.ip;
+    frame_push(vm->frames, f);
+    vm->r.ip = jumpNum - 1; // we have to jump 1 before because we increase the ip by 1 before doing the instruction in the main loop
+    return;
 }
 
 void RET_func(VM* vm)

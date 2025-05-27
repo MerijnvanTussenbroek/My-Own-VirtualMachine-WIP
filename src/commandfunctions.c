@@ -31,7 +31,7 @@ void DEFINE_func(VM* vm)
 
     strcpy(newVar->name, newName);
 
-    //args_addToList(l, *newVar);
+    args_addToList(l, *newVar);
 }
 
 void SET_func(VM* vm)
@@ -45,6 +45,62 @@ void SET_func(VM* vm)
     }
 
     unsigned long int v = value.value;
+
+    command c = vm->program[vm->r.ip];
+    values val = c.argument[0];
+
+    if(val.type != STRING)
+    {
+        exit(-1);
+    }
+
+    char* varName = val.value.name;
+
+    //we first look through global variables, then through the local ones
+    // We also already assume the value has been loaded onto the stack
+
+    args_list* globalList = vm->globalVariables;
+    int length = globalList->size;
+    for(int i = 0; i < length; i++)
+    {
+        args_result result = args_retrieveFromList(globalList, i);
+        if(result.success == 1)
+        {
+            if(strcpy(result.value.name, varName))
+            {
+                Args* updatedValue = &result.value;
+
+                updatedValue->value = v;
+                args_changeInList(globalList, *updatedValue, i);
+                return;
+            }
+        }
+    }
+
+    frame_stack_ss stackItem = frame_pop(vm->frames);
+
+    if(stackItem.success != 1)
+    {
+        exit(-1);
+    }
+
+    args_list* localList = stackItem.value.args;
+    length = localList->size;
+    for(int i = 0; i < length; i++)
+    {
+        args_result result2 = args_retrieveFromList(globalList, i);
+        if(result2.success == 1)
+        {
+            if(strcpy(result2.value.name, varName))
+            {
+                Args* updatedValue2 = &result2.value;
+
+                updatedValue2->value = v;
+                args_changeInList(globalList, *updatedValue2, i);
+                return;
+            }
+        }
+    }
 }
 
 void LOAD_func(VM* vm)

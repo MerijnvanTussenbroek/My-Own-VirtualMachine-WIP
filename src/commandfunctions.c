@@ -169,7 +169,7 @@ void PUSH_func(VM* vm)
 
     values_stack* stack = vm->loadedValues;
 
-    values_push(stack, &val);
+    values_push(stack, (unsigned long int *)&val.value.x);
     return;
 }
 
@@ -185,22 +185,111 @@ void POP_func(VM* vm)
 
 void READ_REG_func(VM* vm)
 {
-    
+    command c = vm->program[vm->r.ip];
+    values reg = c.argument[0];
+
+    unsigned long int v = 0;
+
+    switch(reg.value.num)
+    {
+        case TEMP:
+        v = vm->r.temporaryStorageRegister;
+        break;
+        case VAR1:
+        v = vm->r.Var1;
+        break;
+        case VAR2:
+        v = vm->r.Var2;
+        break;
+        case RESULT:
+        v = vm->r.Result;
+        break;
+        case IP:
+        //v = vm->r.ip;
+        break;
+        case SP:
+        //v = vm->r.sp;
+        break;
+        default:
+        exit(-1);
+        break;
+    }
+
+    values_push(vm->loadedValues, &v);
+
 }
 
 void LOAD_REG_func(VM* vm)
 {
-    
+    command c = vm->program[vm->r.ip];
+    values reg = c.argument[0];
+
+    values_stack* stack = vm->loadedValues;
+
+    values_stack_ss valueToBeLoaded = values_pop(stack);
+
+    unsigned long int v = valueToBeLoaded.value;
+
+    switch(reg.value.num)
+    {
+        case TEMP:
+        vm->r.temporaryStorageRegister = v;
+        break;
+        case VAR1:
+        vm->r.Var1 = v;
+        break;
+        case VAR2:
+        vm->r.Var2 = v;
+        break;
+        case RESULT:
+        vm->r.Result = v;
+        break;
+        case IP: //we shouldn't really allow either of these
+        //vm->r.ip = v;
+        break;
+        case SP:
+        //vm->r.sp = v;
+        break;
+        default:
+        exit(-1);
+        break;
+    }
 }
 
 void LABEL_func(VM* vm)
 {
-    
+    command c = vm->program[vm->r.ip];
+    values name = c.argument[0];
+    values* args = c.argument;
+
+    Frame f = frame_pop(vm->frames).value;
+    f.args = args_listCreate(4);
+
+    if(c.argument[1].type == NULL)
+    {   //this is a function without local variables
+        //this means we need not do anything else
+    }
+    else    //this is a function with local variables
+    {
+        for(int i = 1; args[i].type != NULL; i++)
+        {
+            values v = args[i];
+            char* name = v.value.name;
+            Args* newLocalVar = (Args *)malloc(sizeof(Args));
+            values_stack_ss newLocalValue = values_pop(vm->loadedValues);
+            newLocalVar->name = name;
+            newLocalVar->value = newLocalValue.value;
+
+            args_addToList(f.args, *newLocalVar);
+        }
+    }
+
+    frame_push(vm->frames, &f);
 }
 
 void JUMP_func(VM* vm)
 {
-    
+
 }
 
 void RET_func(VM* vm)

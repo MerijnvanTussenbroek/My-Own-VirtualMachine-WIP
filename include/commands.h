@@ -77,7 +77,7 @@ MUL
 DIV
 
 READ_REG (value)
-LOAD_REG (value) (value)
+LOAD_REG (value) (value) // first value is the register, we load off of the stack
 
 
 LABEL (name) (variable names)

@@ -7,6 +7,8 @@ Program* initializePorgram()
 
     p = (Program *)malloc(sizeof(Program));
 
+    p = (Program *)parse();
+
     return p;
 }
 
@@ -144,7 +146,6 @@ int main()
 {
     Program* p = initializePorgram();
     VM* vm = initializeVirtualMachine(p);    
-
 
     destroyVM(vm);
 

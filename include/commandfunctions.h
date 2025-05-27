@@ -1,6 +1,5 @@
 #pragma once
 #include "virtualmachine.h"
-#include "string.h"
 
 void DEFINE_func(VM* vm);
 void SET_func(VM* vm);

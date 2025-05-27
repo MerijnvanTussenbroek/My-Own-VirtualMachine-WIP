@@ -83,7 +83,7 @@ LOAD_REG (value) (value) // first value is the register, we load off of the stac
 LABEL (name) (variable names)
 JUMP (name) // jumps to the label with that name, any variables needed will be pushed onto the stack, and then popped into the variables defined at the label
 JUMP (value) // if the last item on the stack is a 1, it jumps back the value given
-RET (value) //puts a variable in the temporary register and pushes it on the stack when back
+RET (value) //pushes the variable onto the stack and returns to the instruction after to the jump
 
 HALT
 */

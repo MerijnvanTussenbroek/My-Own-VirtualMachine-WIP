@@ -207,7 +207,7 @@ void READ_REG_func(VM* vm)
         case RESULT:
         v = vm->r.Result;
         break;
-        case IP:
+        case IP: // we shouldn't really allow any of these
         //v = vm->r.ip;
         break;
         case SP:
@@ -315,6 +315,25 @@ void JUMP_func(VM* vm)
         }
     }
 
+    for(int i = 0; c.argument[i].type != NULL; i++)
+    {
+        values v = c.argument[i];
+        unsigned long int valueToBeLoaded = 0;
+        switch(v.type)
+        {
+            case INTEGER:
+                valueToBeLoaded = (unsigned long int)v.value.x;
+            break;
+            case CHARACTER:
+                valueToBeLoaded = (unsigned long int)v.value.y;
+            break;
+            case DOUBLE:
+                valueToBeLoaded = (unsigned long int)v.value.z;
+            break;
+        }
+        values_push(vm->loadedValues, &valueToBeLoaded);
+    }
+
     Frame* f = (Frame *)malloc(sizeof(Frame));
     f->previous = vm->r.ip;
     frame_push(vm->frames, f);
@@ -324,26 +343,72 @@ void JUMP_func(VM* vm)
 
 void RET_func(VM* vm)
 {
-    
+    command c = vm->program[vm->r.ip];
+    values v = c.argument[0];
+
+    frame_stack_ss f = frame_pop(vm->frames);
+    unsigned long int previous = f.value.previous;
+    unsigned long int valueToBePushed = 0;
+
+    switch(v.type)
+    {
+        case INTEGER:
+        valueToBePushed = (unsigned long int)v.value.x;
+        break;
+        case CHARACTER:
+        valueToBePushed = (unsigned long int)v.value.y;
+        break;
+        case DOUBLE:
+        valueToBePushed = (unsigned long int)v.value.z;
+        break;
+    }
+
+    values_push(vm->loadedValues, &valueToBePushed);
+    vm->r.ip = previous; //we say previous and not previous + 1 because the main loop automatically does this for us
+    return;
 }
 
 void ADD_func(VM* vm)
 {
-    
+    unsigned long int v1 = values_pop(vm->loadedValues).value;
+    unsigned long int v2 = values_pop(vm->loadedValues).value;
+
+    unsigned long int v3 = v1 - v2;
+
+    values_push(vm->loadedValues, &v3);
+    return;
 }
 
 void MIN_func(VM* vm)
 {
-    
+    unsigned long int v1 = values_pop(vm->loadedValues).value;
+    unsigned long int v2 = values_pop(vm->loadedValues).value;
+
+    unsigned long int v3 = v1 * v2;
+
+    values_push(vm->loadedValues, &v3);
+    return;
 }
 
 void MUL_func(VM* vm)
 {
-    
+    unsigned long int v1 = values_pop(vm->loadedValues).value;
+    unsigned long int v2 = values_pop(vm->loadedValues).value;
+
+    unsigned long int v3 = v1 / v2;
+
+    values_push(vm->loadedValues, &v3);
+    return;
 }
 
 void DIV_func(VM* vm)
 {
-    
+        unsigned long int v1 = values_pop(vm->loadedValues).value;
+    unsigned long int v2 = values_pop(vm->loadedValues).value;
+
+    unsigned long int v3 = v1 + v2;
+
+    values_push(vm->loadedValues, &v3);
+    return;
 }
 

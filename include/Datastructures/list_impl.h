@@ -7,7 +7,7 @@ name##_list* name##_listCreate(int newSize)                                     
     name##_list* list;                                                              \
     list = malloc(sizeof(name##_list));                                             \
     list->data = malloc(sizeof(type) * (newSize + 4));                              \
-    list->size = 0;                                                           \
+    list->size = newSize;                                                           \
     list->capacity = (newSize + 4);                                                 \
     return list;                        \
 }                                       \

@@ -2,7 +2,9 @@
 
 void DEFINE_func(VM* vm)
 {
-    Frame f = frame_retrieveData(vm->frames->next, 0).value;
+    frame_GraphResult stackItem = frame_pop(vm->frames);
+    Frame f = stackItem.value;
+    frame_push(vm->frames, f);
 
     command c = vm->program[vm->r.ip];
     values v = c.argument[0];
@@ -38,7 +40,7 @@ void DEFINE_func(VM* vm)
 void SET_func(VM* vm)
 {
     values_stack* stack = vm->loadedValues;
-    values_stack_ss value = values_pop(stack);
+    values_GraphResult value = values_pop(stack);
 
     if(value.success != 1)
     {
@@ -78,7 +80,7 @@ void SET_func(VM* vm)
         }
     }
 
-    frame_stack_ss stackItem = frame_pop(vm->frames);
+    frame_GraphResult stackItem = frame_pop(vm->frames);
 
     if(stackItem.success != 1)
     {
@@ -98,7 +100,7 @@ void SET_func(VM* vm)
 
                 updatedValue2->value = v;
                 args_changeInList(localList, *updatedValue2, i);
-                frame_push(vm->frames, &stackItem.value);
+                frame_push(vm->frames, stackItem.value);
                 return;
             }
         }
@@ -132,13 +134,13 @@ void LOAD_func(VM* vm)
         {
             if(strcpy(result.value.name, varName))
             {
-                values_push(stack, &result.value.value);
+                values_push(stack, result.value.value);
                 return;
             }
         }
     }
 
-    frame_stack_ss stackItem = frame_pop(vm->frames);
+    frame_GraphResult stackItem = frame_pop(vm->frames);
 
     if(stackItem.success != 1)
     {
@@ -154,8 +156,8 @@ void LOAD_func(VM* vm)
         {
             if(strcpy(result2.value.name, varName))
             {
-                values_push(stack, &result2.value.value);
-                frame_push(vm->frames, &stackItem.value);
+                values_push(stack, result2.value.value);
+                frame_push(vm->frames, stackItem.value);
                 return;
             }
         }
@@ -172,7 +174,7 @@ void PUSH_func(VM* vm)
 
     values_stack* stack = vm->loadedValues;
 
-    values_push(stack, (unsigned long int *)&val.value.x);
+    values_push(stack, (unsigned long int )val.value.x);
     return;
 }
 
@@ -218,7 +220,7 @@ void READ_REG_func(VM* vm)
         break;
     }
 
-    values_push(vm->loadedValues, &v);
+    values_push(vm->loadedValues, v);
     return;
 }
 
@@ -229,7 +231,7 @@ void LOAD_REG_func(VM* vm)
 
     values_stack* stack = vm->loadedValues;
 
-    values_stack_ss valueToBeLoaded = values_pop(stack);
+    values_GraphResult valueToBeLoaded = values_pop(stack);
 
     unsigned long int v = valueToBeLoaded.value;
 
@@ -282,7 +284,7 @@ void LABEL_func(VM* vm)
             values v = args[i];
             char* name = v.value.name;
             Args* newLocalVar = (Args *)malloc(sizeof(Args));
-            values_stack_ss newLocalValue = values_pop(vm->loadedValues);
+            values_GraphResult newLocalValue = values_pop(vm->loadedValues);
             newLocalVar->name = name;
             newLocalVar->value = newLocalValue.value;
 
@@ -290,7 +292,7 @@ void LABEL_func(VM* vm)
         }
     }
 
-    frame_push(vm->frames, &f);
+    frame_push(vm->frames, f);
     return;
 }
 
@@ -331,12 +333,12 @@ void JUMP_func(VM* vm)
                 valueToBeLoaded = (unsigned long int)v.value.z;
             break;
         }
-        values_push(vm->loadedValues, &valueToBeLoaded);
+        values_push(vm->loadedValues, valueToBeLoaded);
     }
 
     Frame* f = (Frame *)malloc(sizeof(Frame));
     f->previous = vm->r.ip;
-    frame_push(vm->frames, f);
+    frame_push(vm->frames, *f);
     vm->r.ip = jumpNum - 1; // we have to jump 1 before because we increase the ip by 1 before doing the instruction in the main loop
     return;
 }
@@ -346,7 +348,7 @@ void RET_func(VM* vm)
     command c = vm->program[vm->r.ip];
     values v = c.argument[0];
 
-    frame_stack_ss f = frame_pop(vm->frames);
+    frame_GraphResult f = frame_pop(vm->frames);
     unsigned long int previous = f.value.previous;
     unsigned long int valueToBePushed = 0;
 
@@ -363,7 +365,7 @@ void RET_func(VM* vm)
         break;
     }
 
-    values_push(vm->loadedValues, &valueToBePushed);
+    values_push(vm->loadedValues, valueToBePushed);
     vm->r.ip = previous; //we say previous and not previous + 1 because the main loop automatically does this for us
     return;
 }
@@ -375,7 +377,7 @@ void ADD_func(VM* vm)
 
     unsigned long int v3 = v1 - v2;
 
-    values_push(vm->loadedValues, &v3);
+    values_push(vm->loadedValues, v3);
     return;
 }
 
@@ -386,7 +388,7 @@ void MIN_func(VM* vm)
 
     unsigned long int v3 = v1 * v2;
 
-    values_push(vm->loadedValues, &v3);
+    values_push(vm->loadedValues, v3);
     return;
 }
 
@@ -397,7 +399,7 @@ void MUL_func(VM* vm)
 
     unsigned long int v3 = v1 / v2;
 
-    values_push(vm->loadedValues, &v3);
+    values_push(vm->loadedValues, v3);
     return;
 }
 
@@ -408,7 +410,7 @@ void DIV_func(VM* vm)
 
     unsigned long int v3 = v1 + v2;
 
-    values_push(vm->loadedValues, &v3);
+    values_push(vm->loadedValues, v3);
     return;
 }
 

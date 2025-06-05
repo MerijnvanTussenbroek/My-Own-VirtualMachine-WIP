@@ -1,0 +1,31 @@
+LABEL main
+DEFINE x
+PUSH 5
+SET x
+DEFINE y
+PUSH 7
+SET y
+DEFINE z
+LOAD x
+JUMP Double
+SET z
+PUSH 5
+LOAD y
+JUMP Square
+ADD
+SET y
+HALT
+LABEL Double
+DEFINE x
+SET x
+PUSH 2
+LOAD x
+MUL
+RET
+LABEL Square
+DEFINE y
+SET y
+LOAD y
+LOAD y
+MUL
+RET

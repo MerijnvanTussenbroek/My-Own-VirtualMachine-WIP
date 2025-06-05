@@ -27,4 +27,10 @@ name##_GraphResult name##_pop(name##_stack* stack)\
         name##_removeItemFromLL(&stack->LL, 0);\
         return result;                      \
     }                                       \
+}                                           \
+                                            \
+void name##_destroyStack(name##_stack* stack)\
+{                                           \
+    name##_destroyLinkedList(stack->LL);    \
+    free(stack);                            \
 }

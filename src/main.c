@@ -28,9 +28,9 @@ VM* initializeVirtualMachine(Program* p)
 
     unsigned long int initialValue = 0;
 
-    values_stack* valuesStack = values_initializeStack(&initialValue);
+    values_stack* valuesStack = values_initializeStack(initialValue);
 
-    virtualMachine->frames = frame_initializeStack(firstFrame);
+    virtualMachine->frames = frame_initializeStack(*firstFrame);
     virtualMachine->loadedValues = valuesStack;
 
     virtualMachine->program = p;
@@ -55,13 +55,6 @@ void destroyVM(VM* vm)
     frame_destroyStack(frames);
 
     free(vm);
-}
-
-void Setup_VM(VM* vm)
-{
-    Program* p = vm->program;
-    unsigned long int* ip = &vm->r.ip;
-    
 }
 
 void Run_VM(VM* vm)
@@ -141,14 +134,80 @@ void Run_VM(VM* vm)
     destroyVM(vm);
 }
 
+void showProgram(Program* p)
+{
+    unsigned long int* ip = 0;
+    while(p[*ip].instr != HALT)
+    {
+        
+        (*ip)++;
+        switch(p[*ip].instr)
+        {
+            case DEFINE:
+            
+            break;
+            case SET:
+            
+            break;
+            case LOAD:
+            
+            break;
+            case PUSH:
+            
+            break;
+            case READ:
+            
+            break;
+            case POP:
+            
+            break;
+            case READ_REG:
+            
+            break;
+            case LOAD_REG:
+            
+            break;
+            case LABEL:
+            
+            break;
+            case JUMP:
+            
+            break;
+            case RET:
+            
+            break;
+            case ADD:
+            
+            break;
+            case MIN:
+            
+            break;
+            case MUL:
+            
+            break;
+            case DIV:
+            
+            break;
+            case HALT:
+                
+                return;
+            break;
+            default:
+            printf("An unknown command has been put into the program. Error.");
+            return;
+            break;
+        }
+    }
+}
+
 
 int main()
 {
     Program* p = initializePorgram();
-    VM* vm = initializeVirtualMachine(p);    
+    //VM* vm = initializeVirtualMachine(NULL);    
 
-    destroyVM(vm);
+    //destroyVM(vm);
 
-    printf("Program finished without issue");
+    printf("\n\n\nProgram finished without issue");
     return 0;
 }

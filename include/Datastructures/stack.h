@@ -14,3 +14,4 @@ typedef struct name##_stack                 \
 name##_stack* name##_initializeStack(type newData);\
 void name##_push(name##_stack* stack, type newData);\
 name##_GraphResult name##_pop(name##_stack* stack);\
+void name##_destroyStack(name##_stack* stack);\

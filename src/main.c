@@ -18,6 +18,13 @@ VM* initializeVirtualMachine(Program* p)
 
     virtualMachine = (VM *)malloc(sizeof(VM));
 
+    virtualMachine->r.temporaryStorageRegister = 0;
+    virtualMachine->r.Var1 = 0;
+    virtualMachine->r.Var2 = 0;
+    virtualMachine->r.Result = 0;
+    virtualMachine->r.ip = 0;
+    virtualMachine->r.sp = 0;
+
     args_list* l = args_listCreate(1);
 
     Frame* firstFrame = (Frame *)malloc(sizeof(Frame));
@@ -39,7 +46,11 @@ VM* initializeVirtualMachine(Program* p)
 
 void showValues(VM* vm)
 {
-
+    values_stack* valuesStack = vm->loadedValues;
+    frame_stack* frames = vm->frames;
+    args_list* globalVars = vm->globalVariables;
+    
+    
 }
 
 void destroyVM(VM* vm)
@@ -61,10 +72,14 @@ void Run_VM(VM* vm)
 {
     Program* p = vm->program;
     unsigned long int* ip = &vm->r.ip;
-    while(p[*ip].instr != HALT)
+    *ip = 0;
+    while(p[*ip].instr != HALT && *ip < 50)
     {
+        //printf("%lu", *ip);
+        //printCommand(&p[*ip]);
         showValues(vm);
         (*ip)++;
+        
         switch(p[*ip].instr)
         {
             case DEFINE:
@@ -118,6 +133,7 @@ void Run_VM(VM* vm)
             return;
             break;
         }
+        
     }
     if(p[*ip].instr == HALT)
     {
@@ -131,74 +147,13 @@ void Run_VM(VM* vm)
     destroyVM(vm);
 }
 
-void showProgram(Program* p)
-{
-    unsigned long int* ip = 0;
-    while(p[*ip].instr != HALT)
-    {
-        
-        (*ip)++;
-        switch(p[*ip].instr)
-        {
-            case DEFINE:
-            
-            break;
-            case SET:
-            
-            break;
-            case LOAD:
-            
-            break;
-            case PUSH:
-            
-            break;
-            case POP:
-            
-            break;
-            case READ_REG:
-            
-            break;
-            case LOAD_REG:
-            
-            break;
-            case LABEL:
-            
-            break;
-            case JUMP:
-            
-            break;
-            case RET:
-            
-            break;
-            case ADD:
-            
-            break;
-            case MIN:
-            
-            break;
-            case MUL:
-            
-            break;
-            case DIV:
-            
-            break;
-            case HALT:
-                
-                return;
-            break;
-            default:
-            printf("An unknown command has been put into the program. Error.");
-            return;
-            break;
-        }
-    }
-}
-
 
 int main()
 {
     Program* p = initializeProgram();
     VM* vm = initializeVirtualMachine(p);    
+
+    Run_VM(vm);
 
     destroyVM(vm);
 

@@ -8,8 +8,6 @@ DEFINE_LIST(command, command);
 
 void parseLine(char* line, command_list* l);
 
-void printCommand(command* c);
-
 int readNum(char* input);
 char* readName(char* input);
 
@@ -42,6 +40,7 @@ command* parse()
     for(int i = 0; i < l->size; i++)
     {
         listOfCommands[i] = l->data[i];
+        printCommand(&listOfCommands[i]);
     }
 
     command_deleteList(l);

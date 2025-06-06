@@ -6,3 +6,5 @@
 DEFINE_LIST(command, command);
 
 command* parse();
+
+void printCommand(command* c);

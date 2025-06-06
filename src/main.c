@@ -1,7 +1,7 @@
 #include "main.h"
 
 
-Program* initializePorgram()
+Program* initializeProgram()
 {
     Program* p;
 
@@ -197,10 +197,10 @@ void showProgram(Program* p)
 
 int main()
 {
-    Program* p = initializePorgram();
-    //VM* vm = initializeVirtualMachine(NULL);    
+    Program* p = initializeProgram();
+    VM* vm = initializeVirtualMachine(p);    
 
-    //destroyVM(vm);
+    destroyVM(vm);
 
     printf("\n\n\nProgram finished without issue");
     return 0;

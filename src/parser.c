@@ -8,6 +8,8 @@ DEFINE_LIST(command, command);
 
 void parseLine(char* line, command_list* l);
 
+void printCommand(command* c);
+
 int readNum(char* input);
 char* readName(char* input);
 
@@ -35,6 +37,8 @@ command* parse()
     fclose(program);
     listOfCommands = (command *)malloc(l->size * sizeof(command));
     
+    printf("\n\n");
+
     for(int i = 0; i < l->size; i++)
     {
         listOfCommands[i] = l->data[i];
@@ -42,6 +46,7 @@ command* parse()
 
     command_deleteList(l);
     printf("\nfinished parsing\n");
+
     return listOfCommands;
 }
 
@@ -49,16 +54,16 @@ command* parse()
 void parseLine(char* line, command_list* l)
 {
     char* input = line;
-    printf("%s\n", input);
+    //printf("%s\n", input);
 
     //printf("%c\n", line[0]);
-
-    char* newName;
 
     if(line[0] == '\0' || line[0] == '\n')
         return;
     
     command newCommand  = { 0 };
+    newCommand.instr = NOTHING;
+    newCommand.argument = NULL;
 
     switch(line[0])
     {
@@ -77,7 +82,7 @@ void parseLine(char* line, command_list* l)
             if(line[1] == 'E')
             {
                 newCommand.instr = DEFINE;
-                input += 8;
+                input += 7;
                 newCommand.argument = (values *)malloc(sizeof(values));
                 newCommand.argument->type = STRING;
                 newCommand.argument->value.name = readName(input);
@@ -107,14 +112,16 @@ void parseLine(char* line, command_list* l)
         case 'J': //JUMP
             newCommand.instr = JUMP;
             newCommand.argument = (values *)malloc(sizeof(values));
-            input += 6;
+            input += 5;
             if(isdigit(*input))
             {
-
+                newCommand.argument->type = INTEGER;
+                newCommand.argument->value.x = readNum(input);
             }
             else
             {
-
+                newCommand.argument->type = STRING;
+                newCommand.argument->value.name = readName(input);
             }
         break;
         case 'K':
@@ -126,17 +133,17 @@ void parseLine(char* line, command_list* l)
             if(line[1] == 'A')
             {
                 newCommand.instr = LABEL;
-                input += 7;
+                input += 6;
             }
             if(line[4] == '_')
             {
                 newCommand.instr = LOAD_REG;
-                input += 10;
+                input += 9;
             }
             if(line[4] == ' ')
             {
                 newCommand.instr = LOAD;
-                input += 6;
+                input += 5;
             }
 
             newCommand.argument->value.name = readName(input);
@@ -161,7 +168,7 @@ void parseLine(char* line, command_list* l)
             if(line[1] == 'U')
             {
                 newCommand.instr = PUSH;
-                input += 6;
+                input += 5;
                 newCommand.argument = (values *)malloc(sizeof(values));
                 newCommand.argument->type = INTEGER;
                 newCommand.argument->value.x = readNum(input);
@@ -171,7 +178,7 @@ void parseLine(char* line, command_list* l)
 
         break;
         case 'R': // READ_REG RET
-            if(line[4] == ' ')
+            if(line[2] == 'T')
             {
                 newCommand.instr = RET;
                 newCommand.argument = NULL;
@@ -179,13 +186,17 @@ void parseLine(char* line, command_list* l)
             if(line[4] == '_')
             {
                 newCommand.instr = READ_REG;
+                newCommand.argument = (values *)malloc(sizeof(values));
+                input += 9;
+                newCommand.argument->type = INTEGER;
+                newCommand.argument->value.num = readNum(input);
             }
         break;
         case 'S': // SET SUB
             if(line[1] == 'E')
             {
                 newCommand.instr = SET;
-                input += 5;
+                input += 4;
                 newCommand.argument = (values *)malloc(sizeof(values));
                 newCommand.argument->type = STRING;
                 newCommand.argument->value.name = readName(input);
@@ -231,6 +242,74 @@ void parseLine(char* line, command_list* l)
     command_addToList(l, newCommand);
 }
 
+void printCommand(command* c)
+{
+    switch(c->instr)
+    {
+        case DEFINE:
+            printf("DEFINE %s\n", c->argument->value.name);
+        break;
+        case SET:
+            printf("SET %s\n", c->argument->value.name);
+        break;
+        case LOAD:
+            printf("LOAD %s\n", c->argument->value.name);
+        break;
+        case PUSH:
+            printf("PUSH %d\n", c->argument->value.x);
+        break;
+        case POP:
+            printf("POP\n");
+        break;
+        case READ_REG:
+            printf("READ_REG %d\n", c->argument->value.num);
+        break;
+        case LOAD_REG:
+            printf("LOAD_REG %d\n", c->argument->value.num);
+        break;
+        case LABEL:
+            printf("LABEL %s\n", c->argument->value.name);
+        break;
+        case JUMP:
+            if(c->argument->type == INTEGER)
+            {
+                printf("JUMP %d\n", c->argument->value.x);
+            }
+            else
+            {
+                printf("JUMP %s\n", c->argument->value.name);
+            }
+        break;
+        case RET:
+            printf("RET\n");
+        break;
+        case ADD:
+            printf("ADD\n");
+        break;
+        case MIN:
+            printf("MIN\n");
+        break;
+        case MUL:
+            printf("MUL\n");
+        break;
+        case DIV:
+            printf("DIV\n");
+        break;
+        case BEGIN:
+            printf("BEGIN\n");
+        break;
+        case NOTHING:
+            printf("NOTHING\n");
+        break;
+        case HALT:
+            printf("HALT\n");
+        break;
+        default:
+            printf("something went wrong here\n");
+        break;
+    }
+}
+
 int readNum(char* input)
 {
     char* begin = input;
@@ -238,7 +317,7 @@ int readNum(char* input)
 
     size_t length;
 
-    while(*input != ' ')
+    while(*input != ' ' && *input != '\n')
         input++;
 
     length = input - begin;
@@ -256,7 +335,7 @@ char* readName(char* input)
     char* begin = input;
     char* name;
     size_t length;
-    while(*input != ' ')
+    while(*input != ' ' && *input != '\n')
         input++;
 
     length = input - begin;
@@ -264,4 +343,5 @@ char* readName(char* input)
     name = malloc(sizeof(char) * (length + 1));
     strncpy(name, begin, length);
     name[length] = '\0';
+    return name;
 }

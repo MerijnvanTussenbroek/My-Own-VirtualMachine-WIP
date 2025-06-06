@@ -79,9 +79,6 @@ void Run_VM(VM* vm)
             case PUSH:
             PUSH_func(vm);
             break;
-            case READ:
-            READ_func(vm);
-            break;
             case POP:
             POP_func(vm);
             break;
@@ -153,9 +150,6 @@ void showProgram(Program* p)
             
             break;
             case PUSH:
-            
-            break;
-            case READ:
             
             break;
             case POP:

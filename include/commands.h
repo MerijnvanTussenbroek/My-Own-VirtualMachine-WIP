@@ -9,7 +9,6 @@ enum e_opcode
     LOAD,
 
     PUSH,
-    READ,
     POP,
 
     READ_REG,
@@ -25,6 +24,7 @@ enum e_opcode
     DIV,
 
     BEGIN,
+    NOTHING,
     HALT
 };
 typedef unsigned char Opcode;

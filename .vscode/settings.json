@@ -1,6 +1,6 @@
 {
     "files.associations": {
-        "main.C": "cpp",
+        "main.c": "c",
         "stack.h": "c",
         "list.h": "c",
         "commands.h": "c",

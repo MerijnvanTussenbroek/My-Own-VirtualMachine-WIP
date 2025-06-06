@@ -46,11 +46,24 @@ VM* initializeVirtualMachine(Program* p)
 
 void showValues(VM* vm)
 {
+    printf("\n\n");
     values_stack* valuesStack = vm->loadedValues;
     frame_stack* frames = vm->frames;
     args_list* globalVars = vm->globalVariables;
     
-    
+    for(int i = 0; i < globalVars->size; i++)
+    {
+        Args a = globalVars->data[i];
+        printf("%s : %lu\n", a.name, a.value);
+    }
+
+    Frame f = frames->LL->data;
+
+    for(int i = 0; i < f.args->size; i++)
+    {
+        Args b = f.args->data[i];
+        printf("%s : %lu\n", b.name, b.value);
+    }
 }
 
 void destroyVM(VM* vm)
@@ -72,13 +85,16 @@ void Run_VM(VM* vm)
 {
     Program* p = vm->program;
     unsigned long int* ip = &vm->r.ip;
+
+    int amount = 0;
+
     *ip = 0;
-    while(p[*ip].instr != HALT && *ip < 50)
+    while(p[*ip].instr != HALT && amount < 50)
     {
+        amount++;
         //printf("%lu", *ip);
-        //printCommand(&p[*ip]);
-        showValues(vm);
-        (*ip)++;
+        //showValues(vm);
+        printCommand(&p[*ip]);
         
         switch(p[*ip].instr)
         {
@@ -96,12 +112,6 @@ void Run_VM(VM* vm)
             break;
             case POP:
             POP_func(vm);
-            break;
-            case READ_REG:
-            READ_REG_func(vm);
-            break;
-            case LOAD_REG:
-            LOAD_REG_func(vm);
             break;
             case LABEL:
             LABEL_func(vm);
@@ -133,7 +143,7 @@ void Run_VM(VM* vm)
             return;
             break;
         }
-        
+        (*ip)++;
     }
     if(p[*ip].instr == HALT)
     {
@@ -143,8 +153,6 @@ void Run_VM(VM* vm)
     {
         printf("Something went wrong.");
     }
-
-    destroyVM(vm);
 }
 
 

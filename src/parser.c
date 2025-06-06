@@ -40,7 +40,7 @@ command* parse()
     for(int i = 0; i < l->size; i++)
     {
         listOfCommands[i] = l->data[i];
-        printCommand(&listOfCommands[i]);
+        //printCommand(&listOfCommands[i]);
     }
 
     command_deleteList(l);
@@ -134,11 +134,6 @@ void parseLine(char* line, command_list* l)
                 newCommand.instr = LABEL;
                 input += 6;
             }
-            if(line[4] == '_')
-            {
-                newCommand.instr = LOAD_REG;
-                input += 9;
-            }
             if(line[4] == ' ')
             {
                 newCommand.instr = LOAD;
@@ -181,14 +176,6 @@ void parseLine(char* line, command_list* l)
             {
                 newCommand.instr = RET;
                 newCommand.argument = NULL;
-            }
-            if(line[4] == '_')
-            {
-                newCommand.instr = READ_REG;
-                newCommand.argument = (values *)malloc(sizeof(values));
-                input += 9;
-                newCommand.argument->type = INTEGER;
-                newCommand.argument->value.num = readNum(input);
             }
         break;
         case 'S': // SET SUB
@@ -259,12 +246,6 @@ void printCommand(command* c)
         break;
         case POP:
             printf("POP\n");
-        break;
-        case READ_REG:
-            printf("READ_REG %d\n", c->argument->value.num);
-        break;
-        case LOAD_REG:
-            printf("LOAD_REG %d\n", c->argument->value.num);
         break;
         case LABEL:
             printf("LABEL %s\n", c->argument->value.name);

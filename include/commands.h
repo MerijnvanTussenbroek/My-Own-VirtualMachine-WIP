@@ -11,9 +11,6 @@ enum e_opcode
     PUSH,
     POP,
 
-    READ_REG,
-    LOAD_REG,
-
     LABEL,
     JUMP,
     RET,

@@ -124,7 +124,7 @@ void parseLine(char* line, command_list* l)
             newCommand.instr = JUMP;
             newCommand.argument = (values *)malloc(sizeof(values));
             input += 5;
-            if(isdigit(*input))
+            if(isdigit(*input) || *input == '-')
             {
                 newCommand.argument->type = INTEGER;
                 newCommand.argument->value.x = readNum(input);

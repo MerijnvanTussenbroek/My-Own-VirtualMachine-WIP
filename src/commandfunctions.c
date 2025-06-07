@@ -219,6 +219,8 @@ void JUMP_func(VM* vm)
     if(arg->type == INTEGER)
     {
         values_GraphResult result = values_pop(vm->loadedValues);
+
+
         if(result.success != 1)
         {
             printf("Jump failed, couldn't pop off a value");
@@ -235,8 +237,6 @@ void JUMP_func(VM* vm)
     }
     if(arg->type == STRING)
     {
-        //printf("\nyou got here\n");
-        //function jump
         char* name = arg->value.name;
         command* commands = vm->program;
         
@@ -424,9 +424,9 @@ void LESS_func(VM* vm)
     {
         vm->r.Result = 0;
     }
-    printf("\n%lu\n", vm->r.Var1);
-    printf("\n%lu\n", vm->r.Var2);
-    printf("\n%lu\n", vm->r.Result);
+    //printf("\n%lu\n", vm->r.Var1);
+    //printf("\n%lu\n", vm->r.Var2);
+    //printf("\n%lu\n", vm->r.Result);
 
     values_push(stack, vm->r.Result);  
 }

@@ -31,7 +31,7 @@ void DEFINE_func(VM* vm)
         frame_GraphResult f = frame_pop(vm->frames);
         if(f.success != 1)
         {
-            printf("\n tried popping a frame off in DEFINE, failed\n");
+            printf("\ntried popping a frame off in DEFINE, failed\n");
             exit(-1);
         }
         Frame frame = f.value;
@@ -218,8 +218,19 @@ void JUMP_func(VM* vm)
     values* arg = currentCommand.argument;
     if(arg->type == INTEGER)
     {
-        //loop jump
-        //yet to be added
+        values_GraphResult result = values_pop(vm->loadedValues);
+        if(result.success != 1)
+        {
+            printf("Jump failed, couldn't pop off a value");
+            exit(-1);
+        }
+
+        if(result.value == 1)
+        {
+            int jumpLength = arg->value.x;
+
+            vm->r.ip += jumpLength;
+        }
         return;
     }
     if(arg->type == STRING)
@@ -282,20 +293,20 @@ void ADD_func(VM* vm)
     values_GraphResult result = values_pop(stack);
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in ADD popping off the values stack 1\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
         exit(-1);
     }
-    vm->r.Var1 = result.value;
+    vm->r.Var2 = result.value;
 
     result = values_pop(stack);
 
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in ADD popping off the values stack 2\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
         exit(-1);
     }
 
-    vm->r.Var2 = result.value;
+    vm->r.Var1 = result.value;
 
     vm->r.Result = vm->r.Var1 + vm->r.Var2;
 
@@ -309,20 +320,20 @@ void MIN_func(VM* vm)
     values_GraphResult result = values_pop(stack);
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in MIN popping off the values stack 1\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
         exit(-1);
     }
-    vm->r.Var1 = result.value;
+    vm->r.Var2 = result.value;
 
     result = values_pop(stack);
 
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in MIN popping off the values stack 2\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
         exit(-1);
     }
 
-    vm->r.Var2 = result.value;
+    vm->r.Var1 = result.value;
 
     vm->r.Result = vm->r.Var1 - vm->r.Var2;
 
@@ -336,20 +347,20 @@ void MUL_func(VM* vm)
     values_GraphResult result = values_pop(stack);
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in MUL popping off the values stack 1\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
         exit(-1);
     }
-    vm->r.Var1 = result.value;
+    vm->r.Var2 = result.value;
 
     result = values_pop(stack);
 
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in MUL popping off the values stack 2\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
         exit(-1);
     }
 
-    vm->r.Var2 = result.value;
+    vm->r.Var1 = result.value;
 
     vm->r.Result = vm->r.Var1 * vm->r.Var2;
 
@@ -363,22 +374,222 @@ void DIV_func(VM* vm)
     values_GraphResult result = values_pop(stack);
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in DIV popping off the values stack 1\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
         exit(-1);
     }
-    vm->r.Var1 = result.value;
+    vm->r.Var2 = result.value;
 
     result = values_pop(stack);
 
     if(result.success != 1)
     {
-        printf("\nSomething went wrong in DIV popping off the values stack 2\n");
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
         exit(-1);
     }
 
-    vm->r.Var2 = result.value;
+    vm->r.Var1 = result.value;
 
     vm->r.Result = vm->r.Var1 / vm->r.Var2;
 
     values_push(stack, vm->r.Result);    
+}
+
+void LESS_func(VM* vm)
+{
+    values_stack* stack = vm->loadedValues;
+
+    values_GraphResult result = values_pop(stack);
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
+        exit(-1);
+    }
+    vm->r.Var2 = result.value;
+
+    result = values_pop(stack);
+
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
+        exit(-1);
+    }
+
+    vm->r.Var1 = result.value;
+
+    if(vm->r.Var1 < vm->r.Var2)
+    {
+        vm->r.Result = 1;
+    }
+    else
+    {
+        vm->r.Result = 0;
+    }
+    printf("\n%lu\n", vm->r.Var1);
+    printf("\n%lu\n", vm->r.Var2);
+    printf("\n%lu\n", vm->r.Result);
+
+    values_push(stack, vm->r.Result);  
+}
+
+void MORE_func(VM* vm)
+{
+    values_stack* stack = vm->loadedValues;
+
+    values_GraphResult result = values_pop(stack);
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
+        exit(-1);
+    }
+    vm->r.Var2 = result.value;
+
+    result = values_pop(stack);
+
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
+        exit(-1);
+    }
+
+    vm->r.Var1 = result.value;
+
+    if(vm->r.Var1 > vm->r.Var2)
+    {
+        vm->r.Result = 1;
+    }
+    else
+    {
+        vm->r.Result = 0;
+    }
+
+    values_push(stack, vm->r.Result);  
+}
+
+void EQUAL_func(VM* vm)
+{
+    values_stack* stack = vm->loadedValues;
+
+    values_GraphResult result = values_pop(stack);
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
+        exit(-1);
+    }
+    vm->r.Var2 = result.value;
+
+    result = values_pop(stack);
+
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
+        exit(-1);
+    }
+
+    vm->r.Var1 = result.value;
+
+    if(vm->r.Var1 == vm->r.Var2)
+    {
+        vm->r.Result = 1;
+    }
+    else
+    {
+        vm->r.Result = 0;
+    }
+
+    values_push(stack, vm->r.Result);  
+}
+
+void AND_func(VM* vm)
+{
+    values_stack* stack = vm->loadedValues;
+
+    values_GraphResult result = values_pop(stack);
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
+        exit(-1);
+    }
+    vm->r.Var2 = result.value;
+
+    result = values_pop(stack);
+
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
+        exit(-1);
+    }
+
+    vm->r.Var1 = result.value;
+
+    vm->r.Result = 0;
+
+    if(vm->r.Var1 > 0)
+    {
+        if(vm->r.Var2 > 0)
+        {
+            vm->r.Result = 1;
+        }
+    }
+
+    values_push(stack, vm->r.Result);  
+}
+
+void OR_func(VM* vm)
+{
+    values_stack* stack = vm->loadedValues;
+
+    values_GraphResult result = values_pop(stack);
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 1\n");
+        exit(-1);
+    }
+    vm->r.Var2 = result.value;
+
+    result = values_pop(stack);
+
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in LESS popping off the values stack 2\n");
+        exit(-1);
+    }
+
+    vm->r.Var1 = result.value;
+
+    vm->r.Result = 0;
+
+    if(vm->r.Var1 > 0)
+    {
+        vm->r.Result = 1;
+    }
+    if(vm->r.Var2 > 0)
+    {
+        vm->r.Result = 1;
+    }
+
+    values_push(stack, vm->r.Result);  
+}
+
+void NOT_func(VM* vm)
+{
+    values_stack* stack = vm->loadedValues;
+
+    values_GraphResult result = values_pop(stack);
+    if(result.success != 1)
+    {
+        printf("\nSomething went wrong in DIV popping off the values stack 1\n");
+        exit(-1);
+    }
+    vm->r.Var1 = result.value;
+
+    if(vm->r.Var1 == 0)
+    {
+        vm->r.Result = 1;
+    }
+    else
+    {
+        vm->r.Result = 0;
+    }
+
+    values_push(stack, vm->r.Result);  
 }

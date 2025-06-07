@@ -9,7 +9,7 @@ name##_stack* name##_initializeStack(type newData)\
 {                                           \
     name##_stack* stack = malloc(sizeof(name##_stack));\
     stack->LL = name##_initializeLinkedList(newData);\
-    stack->length++;                        \
+    stack->length = 1;                      \
 }                                           \
                                             \
 void name##_push(name##_stack* stack, type newData)\
@@ -26,6 +26,13 @@ name##_GraphResult name##_pop(name##_stack* stack)\
         name##_GraphResult result = name##_retrieveDataFromLL(stack->LL, 0);\
         name##_removeItemFromLL(&stack->LL, 0);\
         return result;                      \
+    }                                       \
+    else                                    \
+    {                                       \
+        printf("tried popping off when length was 0");\
+        name##_GraphResult result2 = { 0 }; \
+        result2.success = 0;                \
+        return result2;                     \
     }                                       \
 }                                           \
                                             \

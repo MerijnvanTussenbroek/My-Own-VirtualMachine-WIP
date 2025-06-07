@@ -40,7 +40,7 @@ command* parse()
     for(int i = 0; i < l->size; i++)
     {
         listOfCommands[i] = l->data[i];
-        //printCommand(&listOfCommands[i]);
+        printCommand(&listOfCommands[i]);
     }
 
     command_deleteList(l);
@@ -67,8 +67,16 @@ void parseLine(char* line, command_list* l)
     switch(line[0])
     {
         case 'A': //ADD
+        if(line[1] == 'D')
+        {
             newCommand.instr = ADD;
             newCommand.argument = NULL;
+        }
+        if(line[1] == 'N')
+        {
+            newCommand.instr = AND;
+            newCommand.argument = NULL;
+        }
         break;
         case 'B': //BEGIN
             newCommand.instr = BEGIN;
@@ -93,7 +101,11 @@ void parseLine(char* line, command_list* l)
             }
         break;
         case 'E':
-
+            if(line[1] == 'Q')
+            {
+                newCommand.instr = EQUAL;
+                newCommand.argument = NULL;
+            }
         break;
         case 'F':
 
@@ -127,31 +139,63 @@ void parseLine(char* line, command_list* l)
 
         break;
         case 'L': // LABEL LOAD LOAD_REG
+
+            if(line[1] == 'E') // less
+            {
+                newCommand.instr = LESS;
+                newCommand.argument = NULL;
+                break;
+            }
+
             newCommand.argument = (values *)malloc(sizeof(values));
             newCommand.argument->type = STRING;
-            if(line[1] == 'A')
+            if(line[1] == 'A') // label
             {
                 newCommand.instr = LABEL;
                 input += 6;
             }
-            if(line[4] == ' ')
+            if(line[4] == ' ') // LOAD
             {
                 newCommand.instr = LOAD;
                 input += 5;
+            }
+            if(line[4] == '_') // LOAD_REG
+            {
+
             }
 
             newCommand.argument->value.name = readName(input);
         break;
         case 'M': // MUL
-            newCommand.instr = MUL;
-            newCommand.argument = NULL;
+            if(line[1] == 'U')
+            {
+                newCommand.instr = MUL;
+                newCommand.argument = NULL;
+            }
+            if(line[1] == 'O')
+            {
+                newCommand.instr = MORE;
+                newCommand.argument = NULL;
+            }
         break;
         case 'N': // NOTHING
-            newCommand.instr = NOTHING;
-            newCommand.argument = NULL;
+            if(line[3] == 'H')
+            {
+                newCommand.instr = NOTHING;
+                newCommand.argument = NULL;
+            }
+            else
+            {
+                newCommand.instr = NOT;
+                newCommand.argument = NULL;
+            }
         break;
         case 'O':
-
+            if(line[1] == 'R')
+            {
+                newCommand.instr = OR;
+                newCommand.argument = NULL;
+            }
         break;
         case 'P': // POP PUSH
             if(line[1] == 'O')
@@ -275,6 +319,27 @@ void printCommand(command* c)
         case DIV:
             printf("DIV\n");
         break;
+
+        case LESS:
+            printf("LESS\n");
+        break;
+        case MORE:
+            printf("MORE\n");
+        break;
+        case EQUAL:
+            printf("EQUAL\n");
+        break;
+        case AND:
+            printf("AND\n");
+        break;
+        case OR:
+            printf("OR\n");
+        break;
+        case NOT:
+            printf("NOT\n");
+        break;
+
+
         case BEGIN:
             printf("BEGIN\n");
         break;

@@ -57,6 +57,8 @@ void showValues(VM* vm)
         printf("%s : %lu\n", a.name, a.value);
     }
 
+    printf("\n\n");
+
     Frame f = frames->LL->data;
 
     for(int i = 0; i < f.args->size; i++)
@@ -87,8 +89,6 @@ void Run_VM(VM* vm)
     unsigned long int* ip = &vm->r.ip;
 
     int amount = 0;
-
-    *ip = 0;
     while(p[*ip].instr != HALT && amount < 50)
     {
         amount++;
@@ -134,7 +134,26 @@ void Run_VM(VM* vm)
             case DIV:
             DIV_func(vm);
             break;
+            case LESS:
+            LESS_func(vm);
+            break;
+            case MORE:
+            MORE_func(vm);
+            break;
+            case EQUAL:
+            EQUAL_func(vm);
+            break;
+            case AND:
+            AND_func(vm);
+            break;
+            case OR:
+            OR_func(vm);
+            break;
+            case NOT:
+            NOT_func(vm);
+            break;
             case HALT:
+                showValues(vm);
                 destroyVM(vm);
                 return;
             break;
@@ -148,11 +167,12 @@ void Run_VM(VM* vm)
     if(p[*ip].instr == HALT)
     {
         showValues(vm);
+        destroyVM(vm);
+        return;
     }
-    else
-    {
-        printf("Something went wrong.");
-    }
+    printf("Something went wrong.");
+    printf("%lu", *ip);
+    printCommand((command *)&p[*ip]);
 }
 
 
@@ -162,8 +182,6 @@ int main()
     VM* vm = initializeVirtualMachine(p);    
 
     Run_VM(vm);
-
-    destroyVM(vm);
 
     printf("\n\n\nProgram finished without issue");
     return 0;

@@ -1,16 +1,27 @@
 LABEL main
-DEFINE x
+DEFINE test
 PUSH 5
-SET x
-LOAD x
-PUSH 7
-LESS
-NOT
-JUMP 6
-LOAD x
-PUSH 1
-ADD
-SET x
-PUSH 1
-JUMP -11
+SET test
+DEFINE result
+LOAD test
+JUMP factorial
+SET result
 HALT
+LABEL factorial
+DEFINE x
+SET x
+LOAD x
+PUSH 0
+EQUAL
+JUMP 9
+LOAD x
+LOAD x
+PUSH 1
+SUB
+JUMP factorial
+MUL
+RET
+PUSH 1
+JUMP 2
+PUSH 1
+RET

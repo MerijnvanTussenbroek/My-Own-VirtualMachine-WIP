@@ -33,7 +33,7 @@ VM* initializeVirtualMachine(Program* p)
     
     virtualMachine->globalVariables = l;
 
-    unsigned long int initialValue = 0;
+    signed long int initialValue = 0;
 
     values_stack* valuesStack = values_initializeStack(initialValue);
 
@@ -86,12 +86,12 @@ void destroyVM(VM* vm)
 void Run_VM(VM* vm)
 {
     Program* p = vm->program;
-    unsigned long int* ip = &vm->r.ip;
+    signed long int* ip = &vm->r.ip;
 
-    int amount = 0;
-    while(p[*ip].instr != HALT && amount < 50)
+    //int amount = 0;
+    while(p[*ip].instr != HALT /*&& amount < 100*/)
     {
-        amount++;
+        //amount++;
         //printf("%lu", *ip);
         //showValues(vm);
         printCommand(&p[*ip]);
@@ -150,7 +150,7 @@ void Run_VM(VM* vm)
             OR_func(vm);
             break;
             case NOT:
-            NOT_func(vm);
+            NOT_func(vm);            
             break;
             case HALT:
                 showValues(vm);
@@ -170,9 +170,11 @@ void Run_VM(VM* vm)
         destroyVM(vm);
         return;
     }
-    printf("Something went wrong.");
-    printf("%lu", *ip);
+    printf("Something went wrong.\n");
+    printf("%lu\n", *ip);
     printCommand((command *)&p[*ip]);
+
+    showValues(vm);
 }
 
 

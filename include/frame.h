@@ -16,7 +16,7 @@ typedef struct
 {
     ArgType type;
     unsigned char* name;
-    unsigned long int value;
+    signed long int value;
 } Args;
 
 DEFINE_LIST(Args, args);

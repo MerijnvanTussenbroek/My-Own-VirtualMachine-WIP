@@ -41,4 +41,6 @@ the VM struct containts the following
 
 
 The parser in this repository is for the results of the C compiler made in Haskell
-a C program compiled with that, can be run in here(after I'm finished, obviously)
+a C program compiled with that, can be run in here.
+
+This virtual machine is not necessarily finished, and I will update it later, but for now the first iteration is complete.
